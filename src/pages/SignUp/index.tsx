@@ -2,7 +2,7 @@ import React from 'react';
 import * as Yup from 'yup';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
-import { FiLogIn, FiMail, FiLock } from 'react-icons/fi';
+import { FiArrowLeft, FiMail, FiLock, FiUser } from 'react-icons/fi';
 
 import logo from '../../assets/logo.svg';
 import Input from '../../components/Input';
@@ -11,17 +11,18 @@ import getValidationsErrors from '../../utils/getValidationsErrors';
 
 import { Container, Background, Content } from './styled';
 
-const SignIn: React.FC = () => {
+const SignUp: React.FC = () => {
   const formRef = React.useRef<FormHandles>(null);
 
   const handleSubmit = React.useCallback(async data => {
     formRef.current?.setErrors({});
     try {
       const schema = Yup.object().shape({
+        name: Yup.string().required('O nome é obrigatório'),
         email: Yup.string()
           .email('E-mail inválido')
           .required('O e-mail é obrigatório'),
-        password: Yup.string().required('Informe sua senha'),
+        password: Yup.string().min(6, 'Mínimo 6 dígitos'),
       });
 
       await schema.validate(data, {
@@ -35,10 +36,12 @@ const SignIn: React.FC = () => {
 
   return (
     <Container>
+      <Background />
       <Content>
         <img src={logo} alt="GoBarber" />
         <Form ref={formRef} onSubmit={handleSubmit}>
-          <h1>Faça seu logon</h1>
+          <h1>Faça seu cadastro</h1>
+          <Input name="name" icon={FiUser} placeholder="Nome" />
           <Input name="email" icon={FiMail} placeholder="E-mail" />
           <Input
             name="password"
@@ -46,17 +49,15 @@ const SignIn: React.FC = () => {
             type="password"
             placeholder="Senha"
           />
-          <Button type="submit">Entrar</Button>
-          <a href="/forgot">Esqueci minha senha</a>
+          <Button type="submit">Cadastrar</Button>
         </Form>
         <a href="/signup">
-          <FiLogIn />
-          Criar conta
+          <FiArrowLeft />
+          Voltar
         </a>
       </Content>
-      <Background />
     </Container>
   );
 };
 
-export default SignIn;
+export default SignUp;
