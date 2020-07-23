@@ -4,7 +4,7 @@ import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import { FiLogIn, FiMail, FiLock } from 'react-icons/fi';
 
-import { AuthContext } from '../../context/auth/AuthContext';
+import { useAuth } from '../../context/auth/AuthContext';
 
 import logo from '../../assets/logo.svg';
 import Input from '../../components/Input';
@@ -20,7 +20,7 @@ interface SignInCredentials {
 
 const SignIn: React.FC = () => {
   const formRef = React.useRef<FormHandles>(null);
-  const { signIn } = React.useContext(AuthContext);
+  const { signIn } = useAuth();
 
   const handleSubmit = React.useCallback(
     async (data: SignInCredentials) => {
@@ -39,8 +39,10 @@ const SignIn: React.FC = () => {
 
         signIn(data);
       } catch (error) {
-        const errors = getValidationsErrors(error);
-        formRef.current?.setErrors(errors);
+        if (error instanceof Yup.ValidationError) {
+          const errors = getValidationsErrors(error);
+          formRef.current?.setErrors(errors);
+        }
       }
     },
     [signIn],

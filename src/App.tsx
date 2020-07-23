@@ -6,11 +6,14 @@ import GlobalStyle from './styles/global';
 
 import { AuthProvider } from './context/auth/AuthContext';
 
+import ToastContainer from './components/ToastContainer';
+
 const App: React.FC = () => {
   return (
     <>
       <AuthProvider>
         <SignIn />
+        <ToastContainer />
       </AuthProvider>
       <GlobalStyle />
     </>
