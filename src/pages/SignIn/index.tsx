@@ -5,6 +5,7 @@ import { FormHandles } from '@unform/core';
 import { FiLogIn, FiMail, FiLock } from 'react-icons/fi';
 
 import { useAuth } from '../../context/auth/AuthContext';
+import { useToast } from '../../context/toast/ToastContext';
 
 import logo from '../../assets/logo.svg';
 import Input from '../../components/Input';
@@ -20,7 +21,9 @@ interface SignInCredentials {
 
 const SignIn: React.FC = () => {
   const formRef = React.useRef<FormHandles>(null);
+
   const { signIn } = useAuth();
+  const { addToast } = useToast();
 
   const handleSubmit = React.useCallback(
     async (data: SignInCredentials) => {
@@ -37,15 +40,17 @@ const SignIn: React.FC = () => {
           abortEarly: false,
         });
 
-        signIn(data);
+        await signIn(data);
       } catch (error) {
         if (error instanceof Yup.ValidationError) {
           const errors = getValidationsErrors(error);
           formRef.current?.setErrors(errors);
         }
+
+        addToast();
       }
     },
-    [signIn],
+    [signIn, addToast],
   );
 
   return (
